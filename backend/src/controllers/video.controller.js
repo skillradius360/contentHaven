@@ -2,11 +2,9 @@ import { apiError } from "../utils/apiError.js";
 import { apiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import {video} from "../models/video.models.js";
-import { createRequire } from "module";
-const require = createRequire(import.meta.url);
+import { main } from "../utils/googleUploader.js";
 
 // Import the uploader
-const { uploader } = require("../utils/megaUploader.cjs");
 
 const uploadAVideo = asyncHandler(async (req, res) => {
     const { title, description, releaseDate, cast, trailerLink } = req.body;
@@ -25,12 +23,10 @@ const uploadAVideo = asyncHandler(async (req, res) => {
     const file = req.files.videoFile[0].path;
     if (!file) throw new apiError(400, "No video file received");
 
-    const folderName = "tester"; // Replace with the desired folder name in MEGA
-    const email =  process.env.MEGA_EMAIL// Replace with your MEGA email
-    const password = process.env.MEGA_PASS// Replace with your MEGA password
 
     // Call the uploader function to upload the video to MEGA
-    const vidURL = await uploader(folderName, file, email, password);
+    const vidURL = await main(file)
+    console.log(vidURL)
 if(!vidURL) throw new apiError(400,"some error prevented uploading")
     const newVideo = await video.create({
         title,
