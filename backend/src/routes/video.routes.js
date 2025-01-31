@@ -12,3 +12,4 @@ videoRouter.route("/uploadVideo").post(upload.fields([
 ]),uploadAVideo)
 
 videoRouter.route("/allVideos").get(getVideos)
+videoRouter.route("/searchVideos").get(searchVideo)

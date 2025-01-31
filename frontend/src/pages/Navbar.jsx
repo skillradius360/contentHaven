@@ -3,7 +3,7 @@ import React from 'react'
 function Navbar() {
   return (
     <div className ="px-10 max-w-screen 
-    text-xl font-semibold bg-[#151515] bg-opacity-100	 text-[#D63484] backdrop-blur-md
+    text-xl font-semibold bg-[#151515] text-[#D63484] backdrop-blur-md
     h-16 items-center  flex justify-between">
         <p>CONTENT HAVEN</p>
 
