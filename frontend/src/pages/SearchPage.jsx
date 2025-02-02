@@ -1,13 +1,25 @@
-import {useState} from 'react'
-import {useSelector} from "react-redux"
+import {useEffect, useState,useCallback} from 'react'
 import Box from '../components/Box'
 import Loader from '../components/Loader.jsx'
+import axios from 'axios'
+import { useParams } from 'react-router-dom'
 
 function SearchPage() {
-    const selector = useSelector(state =>state.searchResults)
-    console.log(selector)
+const {query} = useParams()
+const [response,setResponse] = useState([])
 
-    if(!selector || selector.length==0) return (<Loader/>)
+
+useEffect(()=>{
+  (async ()=>{
+    const res = await axios.get(`/videos/searchVideos/?searchQuery=${query}`)
+    console.log(response)
+    setResponse(res.data.data)
+  })()
+  
+},[query])
+
+if ( response.length<=0) return (<Loader/>)             
+
   return (
     <>
 
@@ -15,12 +27,14 @@ function SearchPage() {
     flex flex-wrap p-6 gap-6
     '>
 
-  {selector?.map((data)=>(
-    <Box key={data._id || Date.now()}
-    coverImg={data?.templateImg}
-    title = {data?.title}
-    description={data?.description}
-    />
+  {response?.map((data)=>(
+   <Box key={data._id}
+   coverImg={data?.templateImg}
+   title = {data?.title}
+   type={data?.type}
+   quality={data?.quality}
+   timeframe={data?.timeframe}
+   />
     )
   )}
    

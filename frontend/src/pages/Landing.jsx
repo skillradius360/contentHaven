@@ -1,23 +1,16 @@
 import { useState} from 'react'
-import axios from 'axios'
-import {useDispatch,useSelector} from "react-redux"
-import {addSearchResults,flushSearchReducers} from "../features/VideoSlice.js"
+// import axios from 'axios'
 import {useNavigate} from "react-router-dom"
 
 function Landing() {
 const [searchData,setSearchData] = useState("")
-const [searchRes,setSearchRes] = useState([])
-const dispatcher =useDispatch()
 const navigate = useNavigate()
 
 async function searchParams(){
-  const res = await axios.get(`/videos/searchVideos/?searchQuery=${searchData}`)
-  console.log(res.data.data)
-  dispatcher(addSearchResults(res.data.data))
-  setSearchRes(res?.data?.data)
-  navigate("/searchResults")
+  
+  navigate(`/searchResults/${searchData}`)
 }
-if(!searchRes) return (<div> Loading ....</div>)
+// if(!searchRes) return (<div> Loading ....</div>)
 
   return (
 

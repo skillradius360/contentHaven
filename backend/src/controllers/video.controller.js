@@ -8,7 +8,7 @@ import uploader  from "../utils/cloudinary.js"
 // Import the uploader
 
 const uploadAVideo = asyncHandler(async (req, res) => {
-    const { title, description, releaseDate, cast, trailerLink } = req.body;
+    const { title, description, releaseDate, cast, trailerLink,timeframe,quality,type } = req.body;
 
     if ([title, description, releaseDate, cast, trailerLink].some((data) => data?.trim() === "")) {
         throw new apiError(400, "Video uploading credentials are not present");
@@ -44,7 +44,8 @@ if(!vidURL) throw new apiError(400,"some error prevented uploading")
         cast,
         trailerLink,
         videoURI: vidURL, 
-        templateImg:titleImageReadyURL?.url
+        templateImg:titleImageReadyURL?.url,
+        timeframe,quality,type
     });
 
     return res.status(200).json(new apiResponse(200, newVideo, "Video uploaded successfully!"));
@@ -75,11 +76,13 @@ const getSingleVideo = asyncHandler(async(req,res)=>{
 })
 
 const searchVideo = asyncHandler(async(req,res)=>{
-    const {searchQuery} = req.query
+    const {searchQuery} = req.query 
+    const query = searchQuery.split("-")
+    
+    const result = await video.find(
+        { $or: query.map(q => ({ title: { $regex: q, $options: "i" } })) }
 
-    const result = await video.find({
-        title:searchQuery
-    })
+    )
 
     if(!result && !(result.length>1)) {
         return res.status(200).json(new apiResponse(200,result,"no search result spotted"))}

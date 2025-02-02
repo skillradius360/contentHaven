@@ -23,6 +23,17 @@ const videoSchema = new mongoose.Schema({
     },
     trailerLink:{
         type:String
+    },
+    type:{
+        type:String
+    },
+    quality:{
+        type:String,
+        default:"HD"
+    },
+    timeframe:{
+        type:String,
+        default:"120m"
     }
 })
 

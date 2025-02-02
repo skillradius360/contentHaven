@@ -29,7 +29,9 @@ function Home() {
      <Box key={data._id}
      coverImg={data?.templateImg}
      title = {data?.title}
-     description={data?.description}
+     type={data?.type}
+     quality={data?.quality}
+     timeframe={data?.timeframe}
      />
     )
   )}
