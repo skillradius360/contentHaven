@@ -4,7 +4,9 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import {video} from "../models/video.models.js";
 import { main } from "../utils/googleUploader.js";
 import uploader  from "../utils/cloudinary.js"
+import Redis from "ioredis"
 
+const redis= new Redis()
 // Import the uploader
 
 const uploadAVideo = asyncHandler(async (req, res) => {
@@ -51,17 +53,30 @@ if(!vidURL) throw new apiError(400,"some error prevented uploading")
     return res.status(200).json(new apiResponse(200, newVideo, "Video uploaded successfully!"));
 });
 
-const getVideos = asyncHandler(async(req,res)=>{
+const getVideos = asyncHandler(async(req,res)=>{ 
     const {pageNo} = req.query
+    const redisData = await redis.get("landingPage:posts")
+    if(redisData && redisData.length>1){
+        return res.status(200).json(new apiResponse(200,JSON.parse(redisData),"redis has data"))
+    }
     const allVideos = await video.aggregate([
-       {
-        $match:{}
-       }
+        {
+            $match:{}
+        }
     ])
-
-    // CUSTOM PAGINATION
-    const filteredResults = await allVideos.slice(pageNo*10,10*pageNo+10)
+    // SET REDIS CACHE 
+    const cachedData = await redis.set("landingPage:posts",JSON.stringify(allVideos))
+    await redis.expire("landingPage:posts",30) //Set expire
+    console.log(cachedData)
+    if(!cachedData || cachedData!=="OK") throw new apiError(400,"caching failure")
+        
+        const uploadedData = await redis.get("landingPage:posts")
+        
+        const filteredResults = await JSON.parse(uploadedData).slice(pageNo*10,10*pageNo+10)
+        
+        // CUSTOM PAGINATION
     if(!filteredResults | !filteredResults>0) throw new apiError(400,"no data found")
+
     return res.status(200).json(new apiResponse(200,filteredResults,"all videos recieved!"))
 })
 
