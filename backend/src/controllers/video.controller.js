@@ -5,6 +5,7 @@ import {video} from "../models/video.models.js";
 import { main } from "../utils/googleUploader.js";
 import uploader  from "../utils/cloudinary.js"
 import Redis from "ioredis"
+import {tv} from "../models/tv.models.js"
 
 const redis= new Redis()
 // Import the uploader
@@ -105,11 +106,42 @@ const searchVideo = asyncHandler(async(req,res)=>{
         else return res.status(200).json(new apiResponse(200,result,"search results found!"))
 })
 
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>****<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
+const uploadTV = asyncHandler(async(req,res)=>{
+    const {title,episodesCount,country,quality,video}= req.body
+
+    if([title,episodesCount,country,quality,video].some((e)=>e.trim==="")) throw new apiError(400,"not recieved data when uploading TV content")
+
+    // const videoFiles = req?.files
+    // if(!videoFiles || videoFiles.length<1) throw new apiError(400,"no episodes recieved!")
+
+    // const cloudUploading = await new Promise.all(
+    //     videoFiles.forEach(async(eps)=>{
+    //         return await uploader(eps.path)
+    //     })
+    // )
+    
+    const TvDoc = await tv.create({
+        title,
+        episodesCount,
+        country,
+        quality,
+        video ,
+        // episodes:[...videoFiles],
+
+    })
+    if(!TvDoc) throw new apiError(400,"web series document creation failed!")
+
+    const finalDoc = await tv.findById(TvDoc?._id)
+    if(!finalDoc) throw new apiError(400,"series creation failure")
+
+res.status(200).json(new apiResponse(200,cloudUploading,"web series format made"))
+})
 
 export { uploadAVideo,
     getVideos,
     getSingleVideo,
-    searchVideo
- };
+    searchVideo,uploadTV
+    };
 

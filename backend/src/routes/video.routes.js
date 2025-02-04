@@ -2,7 +2,8 @@ import Router from "express"
 import { uploadAVideo,
     getVideos,
     getSingleVideo,
-    searchVideo
+    searchVideo,
+    uploadTV
  } from "../controllers/video.controller.js"
 import { upload } from "../middlewares/multer.middlewares.js"
 export const videoRouter = Router()
@@ -13,3 +14,4 @@ videoRouter.route("/uploadVideo").post(upload.fields([
 
 videoRouter.route("/allVideos").get(getVideos)
 videoRouter.route("/searchVideos").get(searchVideo)
+videoRouter.route("/addAShow").post(uploadTV)
