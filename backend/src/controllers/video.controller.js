@@ -6,6 +6,7 @@ import { main } from "../utils/googleUploader.js";
 import uploader  from "../utils/cloudinary.js"
 import Redis from "ioredis"
 import {tv} from "../models/tv.models.js"
+import { isValidObjectId } from "mongoose";
 
 const redis= new Redis()
 // Import the uploader
@@ -139,9 +140,25 @@ const uploadTV = asyncHandler(async(req,res)=>{
 res.status(200).json(new apiResponse(200,cloudUploading,"web series format made"))
 })
 
+const uploadSeasons = asyncHandler(async(req,res)=>{
+    const {seriesId} =req.params
+    if(!seriesId && !isValidObjectId(seriesId)) throw new apiError(400,"No series id provided to connect to!")
+    
+    const seriesData = await tv.findById(seriesId)
+    if(!seriesData) throw new apiError(404,"no series data found or it doesnt exist")
+
+        const currentEpisode= req.files.videoFile[0].path;
+
+    if(!currentEpisode) throw new apiError(404,"no file incoming found")
+    const data = await uploader(currentEpisode)
+
+    if(!data) throw new apiError(400,"uploading of the episode failed!")
+    return res.status(200).json(200,data,"ep uploadaed")
+})
+
 export { uploadAVideo,
     getVideos,
     getSingleVideo,
-    searchVideo,uploadTV
+    searchVideo,uploadTV,uploadSeasons
     };
 
