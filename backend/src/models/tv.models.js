@@ -5,7 +5,8 @@ import mongoose from "mongoose"
 
 const tvSchema = new mongoose.Schema ({
     title:{
-        type:String
+        type:String,
+        unique:true
     },
 
     episodesCount:{

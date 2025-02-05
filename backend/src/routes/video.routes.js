@@ -16,6 +16,6 @@ videoRouter.route("/uploadVideo").post(upload.fields([
 videoRouter.route("/allVideos").get(getVideos)
 videoRouter.route("/searchVideos").get(searchVideo)
 videoRouter.route("/addAShow").post(uploadTV)
-videoRouter.route("/addAEpisode").post(upload.fields([
+videoRouter.route("/addAEpisode/:seriesId").post(upload.fields([
     {name:"videoFile",maxCount:1}
 ]),uploadSeasons)

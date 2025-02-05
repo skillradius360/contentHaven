@@ -8,7 +8,6 @@ import Redis from "ioredis"
 import {tv} from "../models/tv.models.js"
 import { isValidObjectId } from "mongoose";
 
-const redis= new Redis()
 // Import the uploader
 
 const uploadAVideo = asyncHandler(async (req, res) => {
@@ -56,6 +55,8 @@ if(!vidURL) throw new apiError(400,"some error prevented uploading")
 });
 
 const getVideos = asyncHandler(async(req,res)=>{ 
+    const redis= new Redis()
+
     const {pageNo} = req.query
     const redisData = await redis.get("landingPage:posts")
     if(redisData && redisData.length>1){
@@ -112,7 +113,7 @@ const searchVideo = asyncHandler(async(req,res)=>{
 const uploadTV = asyncHandler(async(req,res)=>{
     const {title,episodesCount,country,quality,video}= req.body
 
-    if([title,episodesCount,country,quality,video].some((e)=>e.trim==="")) throw new apiError(400,"not recieved data when uploading TV content")
+    if([title,episodesCount,country,quality,video].some((e)=>e?.trim()==="")) throw new apiError(400,"not recieved data when uploading TV content")
 
     // const videoFiles = req?.files
     // if(!videoFiles || videoFiles.length<1) throw new apiError(400,"no episodes recieved!")
@@ -137,7 +138,7 @@ const uploadTV = asyncHandler(async(req,res)=>{
     const finalDoc = await tv.findById(TvDoc?._id)
     if(!finalDoc) throw new apiError(400,"series creation failure")
 
-res.status(200).json(new apiResponse(200,cloudUploading,"web series format made"))
+res.status(200).json(new apiResponse(200,finalDoc,"web series format made"))
 })
 
 const uploadSeasons = asyncHandler(async(req,res)=>{
@@ -150,10 +151,10 @@ const uploadSeasons = asyncHandler(async(req,res)=>{
         const currentEpisode= req.files.videoFile[0].path;
 
     if(!currentEpisode) throw new apiError(404,"no file incoming found")
-    const data = await uploader(currentEpisode)
+    const data = await main(currentEpisode)
 
     if(!data) throw new apiError(400,"uploading of the episode failed!")
-    return res.status(200).json(200,data,"ep uploadaed")
+    return res.status(200).json(new apiResponse(200,data,"ep uploadaed"))
 })
 
 export { uploadAVideo,
