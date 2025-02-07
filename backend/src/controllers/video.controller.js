@@ -7,6 +7,7 @@ import uploader  from "../utils/cloudinary.js"
 import Redis from "ioredis"
 import {tv} from "../models/tv.models.js"
 import { isValidObjectId } from "mongoose";
+import {seasons} from  "../models/seasons.models.js"
 
 // Import the uploader
 
@@ -130,7 +131,7 @@ const uploadTV = asyncHandler(async(req,res)=>{
         country,
         quality,
         video ,
-        // episodes:[...videoFiles],
+    
 
     })
     if(!TvDoc) throw new apiError(400,"web series document creation failed!")
@@ -143,6 +144,8 @@ res.status(200).json(new apiResponse(200,finalDoc,"web series format made"))
 
 const uploadSeasons = asyncHandler(async(req,res)=>{
     const {seriesId} =req.params
+    const {title,seasonNo}= req.body
+
     if(!seriesId && !isValidObjectId(seriesId)) throw new apiError(400,"No series id provided to connect to!")
     
     const seriesData = await tv.findById(seriesId)
@@ -152,9 +155,19 @@ const uploadSeasons = asyncHandler(async(req,res)=>{
 
     if(!currentEpisode) throw new apiError(404,"no file incoming found")
     const data = await main(currentEpisode)
+if(!data) throw new apiError(400,"uploading of the episode failed!")
+    
+    const SeasonObj = await seasons.create({
+        title,
+        seasonNo,
+        videoURI:data
+    })
+    if(!tvObj) throw new apiError(400, "Episode upload failed")
 
-    if(!data) throw new apiError(400,"uploading of the episode failed!")
-    return res.status(200).json(new apiResponse(200,data,"ep uploadaed"))
+    const isSeasonObjCreated = await seasons.findById(SeasonObj?._id)
+    if(!isSeasonObjCreated) throw new apiError(400,"seasons creation failed!")
+
+    return res.status(200).json(new apiResponse(200,isSeasonObjCreated,"Episode uploaded"))
 })
 
 export { uploadAVideo,

@@ -1,7 +1,7 @@
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import {createBrowserRouter,createRoutesFromChildren,Route,RouterProvider } from "react-router-dom"
-import {Home,Landing,SearchPage,VideoTemplate} from "./pages/index.js"
+import {Home,Landing,SearchPage,VideoTemplate,SeriesUpload} from "./pages/index.js"
 import Root from "./pages/root.jsx"
 
 const router = createBrowserRouter(
@@ -11,6 +11,8 @@ const router = createBrowserRouter(
       <Route path="/searchResults/:query" element={<SearchPage/>}/>
       <Route path="/Home" element={<Home/>}/>
       <Route path="/movie" element={<VideoTemplate/>}/>
+      <Route path="/uploadSeries" element={<SeriesUpload/>}/>
+
     </Route>
   )
 )
