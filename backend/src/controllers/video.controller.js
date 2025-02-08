@@ -147,10 +147,11 @@ const uploadSeasons = asyncHandler(async(req,res)=>{
     const {title,seasonNo}= req.body
 
     if(!seriesId && !isValidObjectId(seriesId)) throw new apiError(400,"No series id provided to connect to!")
+    if(!title && seasonNo) throw new apiError(400,"No title and seasonNo provided")
     
     const seriesData = await tv.findById(seriesId)
     if(!seriesData) throw new apiError(404,"no series data found or it doesnt exist")
-
+        console.log(req.files)
         const currentEpisode= req.files.videoFile[0].path;
 
     if(!currentEpisode) throw new apiError(404,"no file incoming found")
