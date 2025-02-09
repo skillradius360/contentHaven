@@ -116,14 +116,6 @@ const uploadTV = asyncHandler(async(req,res)=>{
 
     if([title,episodesCount,country,quality,video].some((e)=>e?.trim()==="")) throw new apiError(400,"not recieved data when uploading TV content")
 
-    // const videoFiles = req?.files
-    // if(!videoFiles || videoFiles.length<1) throw new apiError(400,"no episodes recieved!")
-
-    // const cloudUploading = await new Promise.all(
-    //     videoFiles.forEach(async(eps)=>{
-    //         return await uploader(eps.path)
-    //     })
-    // )
     
     const TvDoc = await tv.create({
         title,
@@ -142,6 +134,7 @@ const uploadTV = asyncHandler(async(req,res)=>{
 res.status(200).json(new apiResponse(200,finalDoc,"web series format made"))
 })
 
+
 const uploadSeasons = asyncHandler(async(req,res)=>{
     const {seriesId} =req.params
     const {title,seasonNo}= req.body
@@ -151,6 +144,14 @@ const uploadSeasons = asyncHandler(async(req,res)=>{
     
     const seriesData = await tv.findById(seriesId)
     if(!seriesData) throw new apiError(404,"no series data found or it doesnt exist")
+
+    const currentSeasonData = await seasons.findOne({
+        $and:[{title:title},{_id:seriesId}]
+    })
+    console.log(currentSeasonData)
+
+    if(currentSeasonData) throw new apiError(400,"current episode exists")
+
         console.log(req.files)
         const currentEpisode= req.files.videoFile[0].path;
 
@@ -163,7 +164,7 @@ if(!data) throw new apiError(400,"uploading of the episode failed!")
         seasonNo,
         videoURI:data
     })
-    if(!tvObj) throw new apiError(400, "Episode upload failed")
+    if(!SeasonObj) throw new apiError(400, "Episode upload failed") 
 
     const isSeasonObjCreated = await seasons.findById(SeasonObj?._id)
     if(!isSeasonObjCreated) throw new apiError(400,"seasons creation failed!")

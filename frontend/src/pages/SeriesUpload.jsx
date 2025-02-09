@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useForm } from "react-hook-form";
+import LoaderUpload from "../components/LoaderUpload"
 
 function SeriesUpload() {
     const { register, handleSubmit,reset } = useForm();
@@ -12,7 +13,19 @@ function SeriesUpload() {
     const [seriesId,setSeriesId] = useState(null)
 
     const [WebSeriesData, setWebSeriesData] = useState({});// for main series posting
+    
+    const [onLoads,setOnLoads] = useState(false)
+    const formData = new FormData();
+    formData.append("title", seriesData.title);
+    formData.append("episodesCount", seriesData.episodesCount);
+    formData.append("country", seriesData.country);
+    formData.append("quality", seriesData.quality);
+    formData.append("seasonNo", seriesData.seasonNo);
 
+    // Append the actual file
+    if (seriesData.videoData && seriesData.videoData.length > 0) {
+        formData.append("videoFile", seriesData.videoData[0]); // Access the first file
+    }
     function formInjector() {
         setEpisodeInjector(prev => [...prev, { id: Date.now() }]);
     }
@@ -30,7 +43,7 @@ function SeriesUpload() {
 
     async function episodePoster(seriesID){
         console.log(seriesID)
-        const res= await axios.post(`/videos/addAEpisode/${seriesID}`,{...seriesData},{
+        const res= await axios.post(`/videos/addAEpisode/${seriesID}`,formData,{
             withCredentials:true,
             headers:{"Content-Type":'multipart/form-data'}
         }) 
@@ -62,19 +75,24 @@ function SeriesUpload() {
                 className="mt-4 p-2 bg-green-500 hover:bg-green-600 text-white rounded">Add Episode</button>
                 
                 <div className="mt-4">
+                    
                     {episodeInjector.map((data,index) => (
                         <form key={data.id} 
                         onSubmit={handleSubmit((data)=>{
+                            setOnLoads(true)
                             console.log(data)
                             setSeriesData(data)
+                            setOnLoads(false)
                             episodePoster(seriesId)
                         })
                         }
                         className="mt-2 flex flex-col gap-2 bg-gray-700 p-4 rounded text-white">{index+1}.
                             <input type="text" {...register("title")} placeholder="Episode Title" className="p-2 border border-gray-600 rounded bg-gray-800 text-white" />
                             <input type="text" {...register("seasonNo")} placeholder="Season No" className="p-2 border border-gray-600 rounded bg-gray-800 text-white" />
-                            <input type="file" {...register("videoFile")} className="p-2 border border-gray-600 rounded bg-gray-800 text-white" />
-                            <button className="p-2 bg-[#D63484] hover:bg-purple-600 text-white rounded">Post</button>
+                            <input type="file" {...register("videoData")} className="p-2 border border-gray-600 rounded bg-gray-800 text-white" />
+                            <button className="p-2 bg-[#D63484]
+                            hover:bg-purple-600 
+                            text-white rounded">{onLoads?<LoaderUpload/>:<p>Post</p>}</button>
                         </form>
                     ))}
                 </div>
