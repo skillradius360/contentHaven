@@ -19,3 +19,4 @@ videoRouter.route("/addAShow").post(uploadTV)
 videoRouter.route("/addAEpisode/:seriesId").post(upload.fields([
     {name:"videoFile",maxCount:1}
 ]),uploadSeasons)
+videoRouter.route("/getSingleVideo/:videoId").get(getSingleVideo)

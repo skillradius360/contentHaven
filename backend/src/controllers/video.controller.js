@@ -86,7 +86,7 @@ const getVideos = asyncHandler(async(req,res)=>{
 
 const getSingleVideo = asyncHandler(async(req,res)=>{
     const {videoId} = req.params
-    if(isValidObjectId(videoId)) throw new apiError(400,"The object id is not valid ")
+    if(!isValidObjectId(videoId)) throw new apiError(400,"The object id is not valid ")
 
     const videoData = await video.findById(videoId)
     if(!videoData) throw new apiError(400,"no video found by this ID")

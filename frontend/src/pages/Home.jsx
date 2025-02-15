@@ -1,6 +1,7 @@
 import React,{useEffect, useState} from 'react'
 import Box from '../components/Box.jsx'
 import axios from "axios"
+import Loader from '../components/Loader.jsx'
 
 
 function Home() {
@@ -15,7 +16,7 @@ function Home() {
     })()
   },[])
 
-  if(!Response) return (<><p>Loading</p></>)
+  if(!Response || Object.keys(Response).length==0) return <Loader/>
 
   return (
     <>
@@ -27,6 +28,7 @@ function Home() {
 
    {Response?.map((data)=>(
      <Box key={data._id}
+     id={data._id}
      coverImg={data?.templateImg}
      title = {data?.title}
      type={data?.type}

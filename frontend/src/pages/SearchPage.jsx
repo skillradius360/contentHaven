@@ -18,7 +18,10 @@ useEffect(()=>{
   
 },[query])
 
-if ( response.length<=0) return (<Loader/>)             
+if ( Array(response) && response.length==0) {return <h1 className='text-center my-20 text-4xl text-white'>NO RESULTS FOUND</h1>
+}
+
+if(Array.length<=0) return (<Loader/>)
 
   return (
     <>

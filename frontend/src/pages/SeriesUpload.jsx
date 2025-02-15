@@ -15,6 +15,11 @@ function SeriesUpload() {
     const [WebSeriesData, setWebSeriesData] = useState({});// for main series posting
     
     const [onLoads,setOnLoads] = useState(false)
+
+    const [search,setSearch] = useState({})
+    const [searchContent,setSearchContent] = useState("")
+
+
     const formData = new FormData();
     formData.append("title", seriesData.title);
     formData.append("episodesCount", seriesData.episodesCount);
@@ -70,12 +75,30 @@ function SeriesUpload() {
                     <button type="submit" required  className="p-2 bg-[#FFCC00] hover:bg-green-600 ease-in-out text-white rounded">Upload</button>
                 </form>
 
+
+        <form onSubmit={
+            (e)=>{
+                e.preventDefault()
+                setSearchContent(e.target.value)
+                axios.get(`/videos/searchVideos/?searchQuery=${searchContent}`)
+        }
+        }>
+                {/* SEARCH */}
+                <input type="text" onChange={e=>{setSearch(e.target.value)}}
+                placeholder="Enter to Search !!"
+                className="p-2 border border-gray-600 rounded bg-gray-700 text-white " /> 
+
+                <button 
+                className="mt-4 p-2 bg-green-500 hover:bg-green-600 text-white rounded mx-6"
+                >SEARCH</button>
+        </form>
+
                 <button onClick={formInjector} 
                 disabled={isAvailable}
                 className="mt-4 p-2 bg-green-500 hover:bg-green-600 text-white rounded">Add Episode</button>
-                
+
+
                 <div className="mt-4">
-                    
                     {episodeInjector.map((data,index) => (
                         <form key={data.id} 
                         onSubmit={handleSubmit((data)=>{
@@ -87,12 +110,15 @@ function SeriesUpload() {
                         })
                         }
                         className="mt-2 flex flex-col gap-2 bg-gray-700 p-4 rounded text-white">{index+1}.
-                            <input type="text" {...register("title")} placeholder="Episode Title" className="p-2 border border-gray-600 rounded bg-gray-800 text-white" />
-                            <input type="text" {...register("seasonNo")} placeholder="Season No" className="p-2 border border-gray-600 rounded bg-gray-800 text-white" />
-                            <input type="file" {...register("videoData")} className="p-2 border border-gray-600 rounded bg-gray-800 text-white" />
+                            <input type="text" {...register("title")} placeholder="Episode Title"required className="p-2 border border-gray-600 rounded bg-gray-800 text-white" />
+                            <input type="number" {...register("seasonNo")} placeholder="Season No" required className="p-2 border border-gray-600 rounded bg-gray-800 text-white" />
+                            <input type="file" {...register("videoData")}  required className="p-2 border border-gray-600 rounded bg-gray-800 text-white" />
                             <button className="p-2 bg-[#D63484]
                             hover:bg-purple-600 
-                            text-white rounded">{onLoads?<LoaderUpload/>:<p>Post</p>}</button>
+                            text-white rounded" 
+                            // onClick={(e)=>Object.keys(seriesData).length>0?e.target.disabled=false:e.target.disabled=true}
+                            >d
+                            </button>
                         </form>
                     ))}
                 </div>

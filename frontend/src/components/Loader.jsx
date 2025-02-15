@@ -45,7 +45,7 @@ const StyledWrapper = styled.div`
     top: 0;
     width: 100%;
     height: 100%;
-    background: #b910cc;
+    background: #f5c20a;
     border-radius: 7px;
   }
 

@@ -1,6 +1,7 @@
 import { useState} from 'react'
 // import axios from 'axios'
 import {useNavigate} from "react-router-dom"
+import search from "../assets/search.svg"
 
 function Landing() {
 const [searchData,setSearchData] = useState("")
@@ -14,8 +15,8 @@ async function searchParams(){
 
   return (
 
-    <div className='w-screen h-[94.5vh] 
-    bg-[url(/landing.jpg)] bg-cover bg-center
+    <div className='w-[100vw] h-[93vh] 
+    bg-[url(/indiana.jpg)] bg-cover bg-center
     bg-black opacity-55 flex items-center justify-center'>
     
     <form onSubmit={(e)=>{
@@ -26,15 +27,13 @@ async function searchParams(){
     items-center justify-center text-white 
     text-3xl rounded-xl opacity-75'>
 
-    <input type="text" name="" id="" onChange={e=>setSearchData(e.target.value )}
+    <input type="text" name=""  required  id="" onChange={e=>setSearchData(e.target.value )}
     value={searchData}
     className='w-[95%] h-[80%] 
     border-white border-4 rounded-xl outline-none px-1 bg-black'
     placeholder=' Search Here. . . . !'/>
 
-    <button type="submit"
-    className='h-17 w-17 bg-black rounded-md
-    border-white border-4'>&#128269;</button>
+    <button><img src={search} alt="" className='h-10 w-10 mx-2'/></button>
 
     </form>
 

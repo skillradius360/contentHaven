@@ -1,8 +1,10 @@
-import React from "react";
+import {Link} from "react-router-dom"
 
-function Box({ coverImg, title, releaseDate,type,timeframe,quality }) {
+function Box({ id,coverImg, title, releaseDate,type,timeframe,quality }) {
+  console.log(coverImg)
   return (
-    <div className="w-54 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+    <Link to={`/movieTemplate/${id}`}
+    className="w-54 bg-white border-[#f5c20a] border-3 rounded-xl shadow-lg overflow-hidden">
       <div className="relative">
         <img
           src={coverImg} 
@@ -20,7 +22,7 @@ function Box({ coverImg, title, releaseDate,type,timeframe,quality }) {
           {type}
         </span>
       </div>
-    </div>
+    </Link>
   );
 }
 
