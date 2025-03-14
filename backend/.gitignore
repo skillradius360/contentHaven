@@ -1,3 +1,5 @@
 node_modules
 .env
 src/credentials.js
+public/uploads
+public/temp/sample.mp4
