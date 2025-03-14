@@ -36,7 +36,7 @@ const [res,setRes] = useState({})
       <div className="w-3/4 pl-4">
         <div className="flex items-center gap-4">
           <h2 className="text-2xl font-semibold text-black">{res.title}</h2>
-         <Button videoId={res._id} />
+        <Button videoId={res._id} />
         </div>
 
         <div className="flex items-center space-x-2 mt-2">
